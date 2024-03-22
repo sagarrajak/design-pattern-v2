@@ -33,6 +33,7 @@ class ChatRoom {
         person.setChatRoom(this);
     }
 
+
     public void broadCast(String name, String message) {
         for (Person person: people.values()) {
             if (!person.getName().equals(name))
