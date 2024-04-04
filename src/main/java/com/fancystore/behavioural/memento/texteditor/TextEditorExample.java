@@ -1,4 +1,4 @@
-package com.fancystore.behavioural.memento.textEditor;
+package com.fancystore.behavioural.memento.texteditor;
 
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
@@ -6,6 +6,8 @@ import javax.swing.plaf.metal.OceanTheme;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class TextEditorExample extends JFrame implements ActionListener {
     JTextArea t;
@@ -36,6 +38,17 @@ public class TextEditorExample extends JFrame implements ActionListener {
         return  m1;
     }
 
+    private void setKeyListener(JFrame frame) {
+        frame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                System.out.println(e.getKeyCode());
+                if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Z) {
+                    System.out.println("ctl + z pressed");
+                }
+            }
+        });
+    }
 
     private void setupTextEditor() {
         f = new JFrame("editor");
@@ -48,13 +61,14 @@ public class TextEditorExample extends JFrame implements ActionListener {
         }
         catch (Exception e) {}
         t = new JTextArea();
+        t.setLineWrap(true);
         JMenuBar mb = new JMenuBar();
         mb.add(this.setFileMenu());
         mb.add(this.setEditMenu());
         JMenuItem mc = new JMenuItem("close");
         mc.addActionListener(this);
         mb.add(mc);
-
+        setKeyListener(f);
         f.setJMenuBar(mb);
         f.add(t);
         f.setSize(500, 500);
