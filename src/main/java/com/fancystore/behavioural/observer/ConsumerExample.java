@@ -7,11 +7,14 @@ import java.util.function.Consumer;
 public class ConsumerExample {
     public static void main(String[] args) {
         PersonNew personNew = new PersonNew();
-        personNew.eventsHandler.addHandler(personNewPropertyChangeEventArg -> {
-            System.out.println(personNewPropertyChangeEventArg.propertyName+" "+personNewPropertyChangeEventArg.newValue);
+        Event<PropertyChangeEventArg<PersonNew>>.MySubscription mySubscription = personNew.eventsHandler.addHandler(personNewPropertyChangeEventArg -> {
+            System.out.println(personNewPropertyChangeEventArg.propertyName + " " + personNewPropertyChangeEventArg.newValue);
         });
-        for (int i=0; i<100; i++)
+        for (int i=0; i<100; i++) {
             personNew.setAge(i);
+            if (i > 50)
+                mySubscription.close();
+        }
     }
 }
 
@@ -31,7 +34,7 @@ class Event<TArgs> {
         }
     }
 
-    private class MySubscription implements AutoCloseable {
+    public class MySubscription implements AutoCloseable {
         private Event<TArgs> event;
         private Integer counter;
 
@@ -41,7 +44,7 @@ class Event<TArgs> {
         }
 
         @Override
-        public void close() throws Exception {
+        public void close() {
             event.handlers.remove(counter);
         }
     }
